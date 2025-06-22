@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=3 uid="uid://7p7klph1oqug"]
+
+[ext_resource type="Texture2D" uid="uid://du1fwntgrg0xt" path="res://assets/sprites/world_tileset.png" id="1_eig7x"]
+[ext_resource type="Script" uid="uid://dey2d5o4e4aey" path="res://scripts/question_block.gd" id="1_ydts5"]
+[ext_resource type="PackedScene" uid="uid://b0nkdved84fjy" path="res://scenes/coin.tscn" id="2_3oml4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o0dtl"]
+size = Vector2(16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ydts5"]
+size = Vector2(14, 3)
+
+[node name="QuestionBlock" type="StaticBody2D"]
+script = ExtResource("1_ydts5")
+
+[node name="Coin" parent="." instance=ExtResource("2_3oml4")]
+visible = false
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_eig7x")
+region_enabled = true
+region_rect = Rect2(0, 32, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_o0dtl")
+
+[node name="HitDetector" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitDetector"]
+position = Vector2(0, 7.5)
+shape = SubResource("RectangleShape2D_ydts5")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("1_eig7x")
+region_enabled = true
+region_rect = Rect2(192, 0, 16, 16)
+
+[connection signal="body_entered" from="HitDetector" to="." method="_on_hit_detector_body_entered"]

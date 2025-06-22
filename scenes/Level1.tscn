@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://db2oqklollevj"]
+[gd_scene load_steps=19 format=4 uid="uid://db2oqklollevj"]
 
 [ext_resource type="Script" uid="uid://be0yf0b2n5w23" path="res://scripts/game_manager.gd" id="1_n34uq"]
 [ext_resource type="FontFile" uid="uid://bg6y23fu3j0tc" path="res://assets/fonts/PixelOperator8.ttf" id="1_svatc"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://b0nkdved84fjy" path="res://scenes/coin.tscn" id="6_jxjwb"]
 [ext_resource type="PackedScene" uid="uid://drdug8nhg18yl" path="res://scenes/platform.tscn" id="7_2meft"]
 [ext_resource type="PackedScene" uid="uid://cekqjrqu30re4" path="res://scenes/hud.tscn" id="8_ecr63"]
+[ext_resource type="PackedScene" uid="uid://7p7klph1oqug" path="res://scenes/question_block.tscn" id="9_kbo48"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_p57ef"]
 
@@ -477,5 +478,16 @@ offset_bottom = -272.0
 theme_override_fonts/font = ExtResource("1_svatc")
 theme_override_font_sizes/font_size = 8
 text = "Careful!!!"
+
+[node name="LuckyBlocks" type="Node" parent="."]
+
+[node name="QuestionBlock" parent="LuckyBlocks" instance=ExtResource("9_kbo48")]
+position = Vector2(359, -87)
+
+[node name="QuestionBlock2" parent="LuckyBlocks" instance=ExtResource("9_kbo48")]
+position = Vector2(597, -89)
+
+[node name="QuestionBlock3" parent="LuckyBlocks" instance=ExtResource("9_kbo48")]
+position = Vector2(359, -312)
 
 [node name="HUD" parent="." instance=ExtResource("8_ecr63")]
