@@ -2,7 +2,7 @@ extends StaticBody2D
 @onready var coin: Area2D = $Coin
 @export var coins_in_block: int = 5       # cuántas monedas guarda
 @onready var hitbox: Area2D = $HitDetector
-@onready var game_manager: Node = %GameManager
+@onready var game_manager := get_tree().current_scene.get_node("GameManager")
 @onready var block_coin: Sprite2D = $Sprite2D
 @onready var block_empty: Sprite2D = $Sprite2D2
 

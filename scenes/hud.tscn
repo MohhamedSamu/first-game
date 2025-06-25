@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://cekqjrqu30re4"]
+[gd_scene load_steps=14 format=3 uid="uid://cekqjrqu30re4"]
 
 [ext_resource type="FontFile" uid="uid://bg6y23fu3j0tc" path="res://assets/fonts/PixelOperator8.ttf" id="1_ahhtf"]
 [ext_resource type="Script" uid="uid://bco46mj27qgfe" path="res://scripts/hud.gd" id="1_oo0fn"]
 [ext_resource type="FontFile" uid="uid://1mdo8hv3ob8p" path="res://assets/fonts/PixelOperator8-Bold.ttf" id="3_5ysmq"]
+[ext_resource type="AudioStream" uid="uid://ihrf1hcit4xn" path="res://assets/sounds/tap.wav" id="4_6fi6k"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5ysmq"]
 
@@ -55,6 +56,13 @@ corner_radius_top_right = 16
 corner_radius_bottom_right = 16
 corner_radius_bottom_left = 16
 shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ysmq"]
+bg_color = Color(0.353196, 0.402757, 0.76496, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_oo0fn")
@@ -139,6 +147,27 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_5pdws")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_hd3ao")
 theme_override_styles/normal = SubResource("StyleBoxFlat_0i1j5")
 text = "Main menu"
+
+[node name="DashCooldown" type="ProgressBar" parent="."]
+offset_left = 92.0
+offset_top = 11.0
+offset_right = 201.0
+offset_bottom = 28.0
+theme_override_styles/fill = SubResource("StyleBoxFlat_5ysmq")
+value = 100.0
+rounded = true
+show_percentage = false
+
+[node name="DashCooldownLabel" type="Label" parent="."]
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 88.0
+offset_bottom = 35.0
+theme_override_fonts/font = ExtResource("3_5ysmq")
+text = "Dash:"
+
+[node name="sfx_dash_recovered" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_6fi6k")
 
 [connection signal="timeout" from="MessageTimer" to="." method="_on_message_timer_timeout"]
 [connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_restart_pressed"]

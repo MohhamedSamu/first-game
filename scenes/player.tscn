@@ -1,7 +1,49 @@
-[gd_scene load_steps=31 format=3 uid="uid://poed1xkev5r5"]
+[gd_scene load_steps=46 format=3 uid="uid://poed1xkev5r5"]
 
 [ext_resource type="Texture2D" uid="uid://bhl0gnt453mx6" path="res://assets/sprites/knight.png" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://vi3dc22x4ewk" path="res://scripts/player.gd" id="1_g2els"]
+[ext_resource type="Script" uid="uid://c2sojesr3x5x7" path="res://scripts/StateMachine/idle_state.gd" id="3_tuyoq"]
+[ext_resource type="Script" uid="uid://886xgb47nxfx" path="res://scripts/StateMachine/jumping_state.gd" id="4_fjrip"]
+[ext_resource type="Script" uid="uid://bxwupd1l37ntm" path="res://scripts/StateMachine/moving_state.gd" id="5_smehm"]
+[ext_resource type="Script" uid="uid://b0hgv7bgcvkjn" path="res://scripts/StateMachine/dashing_state.gd" id="7_fjrip"]
+[ext_resource type="AudioStream" uid="uid://3dxw7rrl8pgq" path="res://assets/sounds/jump.wav" id="7_smehm"]
+[ext_resource type="Script" uid="uid://5vq5c22gfn6s" path="res://scripts/StateMachine/dead_state.gd" id="7_ur7pv"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pf23h"]
+atlas = ExtResource("1_3vyb7")
+region = Rect2(0, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dt7fs"]
+atlas = ExtResource("1_3vyb7")
+region = Rect2(32, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wqfne"]
+atlas = ExtResource("1_3vyb7")
+region = Rect2(64, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wnwbv"]
+atlas = ExtResource("1_3vyb7")
+region = Rect2(96, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gl8cc"]
+atlas = ExtResource("1_3vyb7")
+region = Rect2(128, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_487ah"]
+atlas = ExtResource("1_3vyb7")
+region = Rect2(160, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_md1ol"]
+atlas = ExtResource("1_3vyb7")
+region = Rect2(192, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bj30b"]
+atlas = ExtResource("1_3vyb7")
+region = Rect2(224, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jc3p3"]
+atlas = ExtResource("1_3vyb7")
+region = Rect2(64, 192, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
 atlas = ExtResource("1_3vyb7")
@@ -109,6 +151,43 @@ region = Rect2(224, 96, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tuyoq"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pf23h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dt7fs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wqfne")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wnwbv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gl8cc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_487ah")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_md1ol")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bj30b")
+}],
+"loop": true,
+"name": &"dashing",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jc3p3")
+}],
+"loop": true,
+"name": &"dead",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_g2els")
@@ -219,9 +298,33 @@ script = ExtResource("1_g2els")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_tuyoq")
-animation = &"jump_1"
+animation = &"jump"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -5)
 shape = SubResource("CircleShape2D_fjrip")
+
+[node name="IdleState" type="Node" parent="."]
+script = ExtResource("3_tuyoq")
+
+[node name="JumpingState" type="Node" parent="."]
+script = ExtResource("4_fjrip")
+
+[node name="MovingState" type="Node" parent="."]
+script = ExtResource("5_smehm")
+
+[node name="DashingState" type="Node" parent="."]
+script = ExtResource("7_fjrip")
+
+[node name="DeadState" type="Node" parent="."]
+script = ExtResource("7_ur7pv")
+
+[node name="SprintCooldown" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="sfx_jump" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("7_smehm")
+
+[connection signal="timeout" from="SprintCooldown" to="." method="_on_sprint_cooldown_timeout"]

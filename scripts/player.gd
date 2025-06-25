@@ -1,19 +1,38 @@
 extends CharacterBody2D
 class_name MainPlayer
 
+signal dash_started
+signal dash_cooldown_started
+signal dash_cooldown_finished
+
 var SPEED := 130.0
 const JUMP_VELOCITY := -300.0
-var dead := false          # ← nuevo
+var dead := false
+var current_state:PlayerState
+var last_facing_direction := 1 # 1= right and -1 = left, right default
+var can_dash := true
+const DASH_SPEED := 200.0
+const DASH_DURATION := 0.2
+const DASH_COOLDOWN := 2
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var col_shape      := $CollisionShape2D   # para desactivarla al morir
+@onready var sfx_jump: AudioStreamPlayer2D = $sfx_jump
+
+func _ready() -> void:
+	change_state("IdleState")
+
+func change_state(new_state_name: String) -> void:
+	if dead:
+		return
+	if current_state:
+		current_state.exit_state()
+	current_state = get_node(new_state_name)
+	if current_state:
+		current_state.enter_state(self)
 
 func die() -> void:
-	dead = true
-	velocity = Vector2.ZERO       # fija la velocidad
-	SPEED   = 0                   # evita que vuelva a cambiar
-	col_shape.disabled = true     # ignora colisiones
-
+	change_state("DeadState")
 
 func _physics_process(delta: float) -> void:
 	if dead:
@@ -24,17 +43,17 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 	
+	var direction := Input.get_axis("move_left", "move_right")
+	if direction != 0:
+		last_facing_direction = sign(direction)
 	
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-
-	# Handle jump.
-	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
-
-	# Get the input direction and handle the movement/deceleration.
-	var direction := Input.get_axis("move_left", "move_right")
+	
+	if current_state:
+		current_state.handle_input(delta)
+	move_and_slide()
 	
 	#Flip the sprite
 	if direction > 0:
@@ -42,20 +61,8 @@ func _physics_process(delta: float) -> void:
 	elif direction < 0:
 		animated_sprite.flip_h = true
 	
-	#Play animations
-	if is_on_floor():
-		if direction == 0:
-			animated_sprite.play("idle")
-		else:
-			animated_sprite.play("run")
-	else:
-		animated_sprite.play("jump")
-		#animated_sprite.play("jump_1")
-	
-	# apply movement
-	if direction:
-		velocity.x = direction * SPEED
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
 
-	move_and_slide()
+
+func _on_sprint_cooldown_timeout() -> void:
+	can_dash = true
+	dash_cooldown_finished.emit()
